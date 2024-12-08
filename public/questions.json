@@ -1,0 +1,70 @@
+[
+  {
+    "question": "List the players that have been captain for the Indian team in the 'ICC World Cup' tournament.",
+    "answer": [
+      "Kapil Dev",
+      "Mohammad Azharuddin",
+      "Sourav Ganguly",
+      "Rahul Dravid",
+      "Sachin Tendulkar",
+      "MS Dhoni",
+      "Virat Kohli"
+    ],
+    "hint": "Use the 'captains' key from the 'players' object in the 'data.json' file.",
+    "sql": "SELECT name from players",
+    "level": 2,
+    "hardcode": [
+      ["name", "team_type", "country_id", "club_id"],
+      ["australia", "international", null, null],
+      ["south africa", "international", null, null],
+      ["pakistan", "international", null, null],
+      ["sri lanka", "international", null, null],
+      ["new zealand", "international", null, null],
+      ["papua new guinea", "international", null, null],
+      ["namibia", "international", null, null],
+      ["netherlands", "international", null, null],
+      ["nepal", "international", null, null],
+      ["kenya", "international", null, null],
+      ["hong kong", "international", null, null],
+      ["scotland", "international", null, null],
+      ["ireland", "international", null, null],
+      ["zimbabwe", "international", null, null],
+      ["india", "international", null, null],
+      ["bangladesh", "international", null, null],
+      ["england", "international", null, null],
+      ["west indies", "international", null, null],
+      ["gibraltar", "international", null, null],
+      ["israel", "international", null, null],
+      ["germany", "international", null, null],
+      ["isle of man", "international", null, null],
+      ["spain", "international", null, null],
+      ["malaysia", "international", null, null],
+      ["singapore", "international", null, null]
+    ]
+  },
+  {
+    "question": "Which team has won the most T20 matches?",
+    "sql": "SELECT count(*) as count, winning_team_name FROM matches WHERE gender='male' AND match_type='T20' GROUP BY winning_team_name ORDER BY count DESC LIMIT 1",
+    "level": 2
+  },
+  {
+    "question": "What is the highest score in a single match?",
+    "sql": "SELECT name from players",
+    "level": 3
+  },
+  {
+    "question": "How many matches ended in a draw, tie, or no result?",
+    "sql": "SELECT name from players",
+    "level": 1
+  },
+  {
+    "question": "Which player has the most man-of-the-match awards?",
+    "sql": "SELECT name from players",
+    "level": 3
+  },
+  {
+    "question": "How often does the team winning the toss win the match?",
+    "sql": "SELECT name from players",
+    "level": 4
+  }
+]
