@@ -20,11 +20,7 @@ const SQLiteContext = createContext<
   | undefined
 >(undefined);
 
-let sqlite3: any;
-
-sqlite3InitModule().then((sqlite) => {
-  sqlite3 = sqlite;
-});
+let sqlite3 = await sqlite3InitModule();
 
 async function downloadWithProgress(
   url: string,
@@ -52,19 +48,21 @@ async function downloadWithProgress(
 
     chunks.push(value);
     receivedLength += value.byteLength;
-    onProgress(Math.min((receivedLength / contentLength) * 100, 100));
+    // There is no way to determine actual file size. Hardcoding the file size to be 800mb.
+    // As long as the received file is below this size. Everything should be fine.
+    onProgress(Math.min((receivedLength / 800_000_000) * 100, 99));
   }
 
-  const allChunks = new Uint8Array(receivedLength);
-  let position = 0;
+  // Concatenate chunks into a single ArrayBuffer
+  const concatenated = new Uint8Array(receivedLength);
+  let offset = 0;
   for (const chunk of chunks) {
-    allChunks.set(chunk, position);
-    position += chunk.length;
+    concatenated.set(chunk, offset);
+    offset += chunk.length;
   }
 
-  const brotliPromise = await import("brotli-dec-wasm");
-  const brotli = await brotliPromise.default;
-  return brotli.decompress(allChunks);
+  onProgress(100);
+  return concatenated;
 }
 
 export function SQLiteProvider({
@@ -98,6 +96,9 @@ export function SQLiteProvider({
         callback: (row) => {
           console.log(row);
         },
+      });
+      db.exec({
+        sql: "PRAGMA shrink_memory",
       });
       return db;
     };

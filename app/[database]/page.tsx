@@ -1,20 +1,31 @@
 "use client";
-import { SQLiteProvider } from "@/hooks/useSqlite";
 import { useParams } from "next/navigation";
+import dynamic from "next/dynamic";
 import { useState, Suspense } from "react";
-import Content from "./content";
+import { useAtomValue } from "jotai";
+
+import { type Score } from "@/types";
+import { Scoreboard } from "@/components/scoreboard";
+import { scoreboardAtom } from "@/atoms/scoreboard";
+
+const Content = dynamic(() => import("./content"), { ssr: false });
+const SQLiteProvider = dynamic(
+  async () => (await import("@/hooks/use-sqlite")).SQLiteProvider,
+  { ssr: false },
+);
 
 export default function Index() {
   const { database } = useParams();
 
+  const scoreboard = useAtomValue(scoreboardAtom);
+
   return (
     <div className="max-w-5xl m-auto p-4">
-      <div className="hero">
+      <div className="hero mb-16">
         <div className="hero-content text-center">
-          <div className="max-w-md">
-            <h1 className="text-5xl font-bold">
-              Practice SQL as a Cricket Fan
-            </h1>
+          <div className="max-w-2xl">
+            <h1 className="text-5xl font-bold">SELECT * FROM Cricket</h1>
+            <Scoreboard score={scoreboard[database as string]} />
           </div>
         </div>
       </div>
@@ -28,7 +39,7 @@ export default function Index() {
 
       <Suspense fallback={<div>Loading...</div>}>
         <SQLiteProvider
-          dbUrl={`${process.env.NEXT_PUBLIC_DATABASE_URL}/${database as string}.db.br`}
+          dbUrl={`${process.env.NEXT_PUBLIC_DATABASE_URL}/${database as string}.db`}
         >
           <Content />
         </SQLiteProvider>

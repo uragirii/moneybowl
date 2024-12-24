@@ -1,7 +1,9 @@
-import SqlEditor from "@/components/SqlEditor";
-import { useSQLite } from "@/hooks/useSqlite";
 import { isEqual } from "lodash";
 import { useEffect, useState } from "react";
+
+import { DatabaseResult } from "@/components/database-result";
+import { SqlEditor } from "@/components/sql-editor";
+import { useSQLite } from "@/hooks/use-sqlite";
 
 export default function Content() {
   const [questions, setQuestions] = useState<any[]>([]);
@@ -44,9 +46,13 @@ function Question({
   levels: number[];
 }) {
   const [showHint, setShowHint] = useState(false);
-  const [queryText, setQueryText] = useState("");
+  const [queryText, setQueryText] = useState("SELECT * from players");
   const [results, setResults] = useState<any[]>([]);
-  const [isResultCorrect, setIsResultCorrect] = useState<boolean | undefined>(undefined);
+  const [correctResults, setCorrectResults] = useState<any[]>([]);
+  const [showCorrectResult, setShowCorrectResult] = useState(false);
+  const [isResultCorrect, setIsResultCorrect] = useState<boolean | undefined>(
+    undefined,
+  );
   const [error, setError] = useState("");
   const { runQuery, loadingProgress } = useSQLite();
 
@@ -58,9 +64,7 @@ function Question({
         runQuery(question.sql),
       ]);
       setResults(result);
-
-      console.log(result);
-      console.log(correctResult);
+      setCorrectResults(correctResult);
 
       if (isEqual(result, correctResult)) {
         setIsResultCorrect(true);
@@ -80,10 +84,15 @@ function Question({
     <>
       <p className="text-xl text-info font-bold mt-10 mb-2">Question:</p>
       <p className="max-w-2xl">{question.question}</p>
-      {showHint && <p className="text-sm text-gray-500 mt-1">{question.hint}</p>}
+      {showHint && (
+        <p className="text-sm text-gray-500 mt-1">{question.hint}</p>
+      )}
       <div className="mt-2 flex gap-2">
         {question.hint && (
-          <button className="btn btn-outline btn-sm inline-block" onClick={() => setShowHint(true)}>
+          <button
+            className="btn btn-outline btn-sm inline-block"
+            onClick={() => setShowHint(true)}
+          >
             Show hint
           </button>
         )}
@@ -113,60 +122,52 @@ function Question({
         )}
       </div>
       <div className="mt-4 flex flex-col gap-2 items-start">
-        {/* <textarea
-          value={queryText}
-          onChange={(e) => setQueryText(e.target.value)}
-          className="min-w-full max-w-3xl min-h-16 textarea-primary p-2 placeholder:opacity-50 font-mono "
-          placeholder="SELECT * from players"
-        /> */}
-        {loadingProgress >= 100 && <SqlEditor onChange={(value) => setQueryText(value ?? "")} />}
+        {loadingProgress >= 100 && (
+          <SqlEditor
+            onChange={(value) => setQueryText(value ?? "")}
+            defaultValue={queryText}
+          />
+        )}
         {isResultCorrect === undefined && loadingProgress < 100 && (
-          <button onClick={handleRunQuery} className="btn btn-sm btn-accen btn-disabledt">
-            Loading database... ({loadingProgress}%)
+          <button
+            onClick={handleRunQuery}
+            className="btn btn-sm btn-accen btn-disabledt"
+          >
+            Download database... ({Math.floor(loadingProgress)}%)
           </button>
         )}
         {isResultCorrect === undefined && loadingProgress === 100 && (
-          <button onClick={handleRunQuery} className="btn btn-sm btn-accent">
+          <button
+            onClick={handleRunQuery}
+            className="btn btn-sm btn-accent mt-2"
+          >
             Run Query
           </button>
         )}
         {isResultCorrect === false && (
           <button onClick={handleRunQuery} className="btn btn-sm btn-warning">
-            Try Again
+            Run Again
           </button>
         )}
         {isResultCorrect === true && (
-          <button onClick={() => nextQuestion(question.level)} className="btn btn-sm btn-info">
+          <button
+            onClick={() => nextQuestion(question.level)}
+            className="btn btn-sm btn-info"
+          >
             Next Question
           </button>
         )}
       </div>
       {error && <p className="text-error mt-2">{error}</p>}
       {results.length > 0 && (
-        <>
-          <div className="mt-4 overflow-x-auto max-w-4xl">
-            <p
-              className={
-                "text-xl font-bold mt-10 mb-2 " + (isResultCorrect ? "text-info" : "text-error")
-              }
-            >
-              Your Result:
-            </p>
-            <table className="table table-zebra">
-              <tbody>
-                {results.map((row, i) => (
-                  <tr key={i}>
-                    {Array.isArray(row) ? (
-                      row.map((cell, j) => <td key={j}>{cell?.toString()}</td>)
-                    ) : (
-                      <td>{row?.toString()}</td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
+        <DatabaseResult
+          results={showCorrectResult ? correctResults : results}
+          isResultCorrect={!!isResultCorrect}
+          isShowingCorrectResult={showCorrectResult}
+          toggleResult={() => {
+            setShowCorrectResult(!showCorrectResult);
+          }}
+        />
       )}
     </>
   );
