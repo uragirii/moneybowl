@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAtomValue } from "jotai";
 
 import { Question, Questions } from "@/types";
@@ -12,7 +12,6 @@ interface UseQuestionsPros {
 /** Selects a question based on an algorithm. Factoring in previous score */
 export function useQuestions({ questions, database }: UseQuestionsPros) {
   const scoreboard = useAtomValue(scoreboardAtom);
-  const initialized = useRef(false);
 
   const calculateStartingLevel = () => {
     if (!scoreboard) return 0;
@@ -127,14 +126,10 @@ export function useQuestions({ questions, database }: UseQuestionsPros) {
   };
 
   useEffect(() => {
-    if (!initialized.current && scoreboard !== undefined) {
-      initialized.current = true;
-      const startingLevel = calculateStartingLevel();
-      console.log("Starting level", startingLevel);
-      loadQuestion(startingLevel);
-      // setCurrentQuestion(questions.find((q) => q.id === "9")!);
-    }
-  }, [scoreboard]);
+    const startingLevel = calculateStartingLevel();
+    loadQuestion(startingLevel);
+    // TESTING: setCurrentQuestion(questions.find((q) => q.id === "9")!);
+  }, []);
 
   return {
     loadQuestion,

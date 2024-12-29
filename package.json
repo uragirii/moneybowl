@@ -17,6 +17,7 @@
     "lodash": "^4.17.21",
     "monaco-editor": "^0.52.0",
     "next": "latest",
+    "posthog-js": "^1.203.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

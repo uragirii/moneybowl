@@ -33,6 +33,8 @@ export function Question({
 
   const handleRunQuery = async () => {
     try {
+      const posthog = (window as any).posthog;
+
       setError("");
       const [result, correctResult] = await Promise.all([
         runQuery(queryText),
@@ -45,6 +47,7 @@ export function Question({
       const [, correctResultWithoutHeader] = correctResult;
 
       if (isEqual(resultWithoutHeader, correctResultWithoutHeader)) {
+        posthog?.capture("run_query", { id: question.id, correctAnswer: true });
         setIsResultCorrect(true);
         setScoreboard((prev) => {
           const newScore = prev?.[database as string] ?? {};
@@ -54,6 +57,10 @@ export function Question({
           return { ...prev, [database as string]: newScore };
         });
       } else {
+        posthog?.capture("run_query", {
+          id: question.id,
+          correctAnswer: false,
+        });
         setIsResultCorrect(false);
       }
 

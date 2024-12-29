@@ -5,4 +5,8 @@ import { Score } from "@/types";
 export const scoreboardAtom = atomWithStorage<Score | undefined>(
   "scoreboard",
   undefined,
+  undefined,
+  {
+    getOnInit: true,
+  },
 );

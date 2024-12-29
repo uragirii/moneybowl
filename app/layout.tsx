@@ -1,4 +1,5 @@
 import "./globals.css";
+import { CSPostHogProvider } from "./providers";
 
 export const metadata = {
   title: "Next.js",
@@ -30,7 +31,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <CSPostHogProvider>
+        <body>{children}</body>
+      </CSPostHogProvider>
     </html>
   );
 }
