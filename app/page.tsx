@@ -1,24 +1,29 @@
 export default function Content() {
   return (
-    <>
+    <div className="px-4">
       <div className="hero">
         <div className="hero-content text-center">
-          <div className="max-w-md">
+          <div className="max-w-2xl flex flex-col items-center">
             <h1 className="text-5xl font-bold">SELECT * FROM Cricket</h1>
+            <p className="mt-3 max-w-lg">
+              <span className="font-bold">Moneybowl:</span> like the movie
+              Moneyball. Master SQL while learning interesting facts about
+              cricket.
+            </p>
           </div>
         </div>
       </div>
 
       <div className="mt-10">
-        <div className="m-auto max-w-md">
+        <div className="m-auto max-w-2xl">
           <div>
-            <p className="text-xl text-info font-bold">Here's how it works?</p>
+            <p className="text-xl text-info font-bold">How it works?</p>
             <ul className="list-none">
               <li className="before:content-['-'] before:mr-2">
                 Select a database
               </li>
               <li className="before:content-['-'] before:mr-2">
-                Go through the ER diagram
+                Study the DB schema using the ER diagram
               </li>
               <li className="before:content-['-'] before:mr-2">
                 Read the question and submit an SQL query
@@ -49,11 +54,12 @@ export default function Content() {
             </p>
             <p>
               The database includes matches played between countries including
-              tournaments like ICC, T20 World Cup, etc. A total of{" "}
-              <span className="font-bold">8359</span> matches are available,
-              played by both
-              <span className="font-bold"> male</span> and{" "}
-              <span className="font-bold">female</span> players.
+              tournaments like ICC, T20 World Cup, etc. Across all formats
+              including T20, ODI and test. A total of{" "}
+              <span className="font-bold">6378</span> matches are available,
+              played by <span className="font-bold"> male</span> players, and
+              played between <span className="font-bold">2001-12-19</span> and{" "}
+              <span className="font-bold">2024-11-27</span>.
             </p>
           </div>
           <div className="mt-5">
@@ -62,8 +68,17 @@ export default function Content() {
             </p>
             <p>Coming soon!</p>
           </div>
+          <div className="mt-5">
+            <p className="text-sm text-gray-500">
+              The data is provided by{" "}
+              <a href="https://cricsheet.org/" target="_blank">
+                cricksheet.org
+              </a>{" "}
+              in JSON format. We then convert it into a SQLite database.
+            </p>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

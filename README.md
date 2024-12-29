@@ -1,27 +1,14 @@
-# WebWorker example
+# Moneybowl
 
-This example shows how to run code in WebWorkers by utilizing [webpack 5](https://nextjs.org/docs/messages/webpack5).
+Master SQL while learning interesting facts about cricket.
 
-## Deploy your own
+### About the tech stack
 
-Deploy the example using [Vercel](https://vercel.com/) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-web-worker)
+**Frontend**: This repo contains the frontend which is written using Next.js.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-web-worker&project-name=with-web-worker&repository-name=with-web-worker)
+**Database**: The dataset is stored in a SQLite database which is read into memory by the frontend client.
+The data for the dataset comes from [cricsheet.org](https://cricsheet.org/) and is processed into a SQLite database
+using the code in [to be linked]() repo. The SQLite database file is stored in a cloud bucket.
 
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-web-worker with-web-worker-app
-```
-
-```bash
-yarn create next-app --example with-web-worker with-web-worker-app
-```
-
-```bash
-pnpm create next-app --example with-web-worker with-web-worker-app
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+**Questions**: The questions are stored in a YAML file at `static/[databaseName]/questions.yaml`. Feel free to add
+more questions using a pull request. The structure for the YAML can be found at [`types/index.ts#Questions`](types/index.ts)

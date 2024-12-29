@@ -1,0 +1,187 @@
+- id: "1"
+  question: List the number of countries that have played international cricket.
+  hint: Use the `count` function on the teams table.
+  sql: SELECT count(name) from teams
+  level: 0
+
+- id: "2"
+  question: Which team has won the most international cricket matches?
+  hint: Use GROUP BY on the matches table and limit the answer to 1.
+  sql: SELECT winning_team_name FROM matches GROUP BY winning_team_name ORDER BY count(winning_team_name) DESC LIMIT 1
+  titbit: India has won a total of 552 matches, followed by Australia with 515 wins, and then England with 427 wins.
+  level: 0
+
+- id: "3"
+  question: List the top 10 players to have played the most number of international matches in descending order.
+  hint: To get player name you need use JOIN with the players table.
+  sql: |
+    SELECT team_name, players.name, count(player_id) AS "Matches Played"
+        FROM players_in_match
+        JOIN players ON player_id = id
+        GROUP BY player_id
+        ORDER BY "Matches Played" DESC
+        LIMIT 10
+  titbit: Virat Kohli being a GOAT as always.
+  level: 1
+  resultSchema:
+    - [Team Name, Player Name, Matches Played]
+    - [India, Sachin Tendulkar, "463"]
+    - ["-", "-", "-"]
+    - ["-", "-", "-"]
+
+- id: "4"
+  question: How many runs has MS Dhoni scored in international cricket?
+  hint: First find the player_id of MS Dhoni from the players table and then use the `batter` field in the deliveries table.
+  sql: |
+    SELECT SUM(runs.batsman) FROM runs
+      JOIN deliveries
+        ON deliveries.match_id = runs.match_id
+        AND deliveries.inning_number = runs.inning_number
+        AND deliveries.over_number = runs.over_number
+        AND deliveries.ball_number = runs.ball_number
+      WHERE batter = '4a8a2e3b'
+  level: 2
+  resultSchema:
+    - [Total runs]
+    - ["16,xxx"]
+
+- id: "5"
+  question: How many wickets has Jasprit Bumrah taken in international cricket?
+  hint: The player_id of Jasprit Bumrah is '462411b3'. Join the wickets table with the deliveries table.
+  sql: |
+    SELECT count(*) FROM wickets
+      JOIN deliveries
+        ON wickets.match_id = deliveries.match_id
+        AND wickets.inning_number = deliveries.inning_number
+        AND wickets.over_number = deliveries.over_number
+        AND wickets.ball_number = deliveries.ball_number
+      WHERE bowler = '462411b3'
+  level: 2
+  resultSchema:
+    - [Total Wickets]
+    - ["2xx"]
+
+- id: "6"
+  question: List the players to have joined team India in 2024.
+  hint: |
+    Using a query on `players_in_match`. First find all the players who have played for India before 2024. Then exclude them from the list of players who played for team India.
+  sql: |
+    SELECT DISTINCT player_id, name from players_in_match
+      JOIN match_dates ON players_in_match.match_id = match_dates.match_id
+      JOIN players ON players_in_match.player_id = players.id
+      WHERE players_in_match.player_id NOT IN (
+        SELECT DISTINCT player_id from players_in_match
+          JOIN match_dates ON players_in_match.match_id = match_dates.match_id
+          WHERE team_name = 'india'
+          AND date NOT LIKE '2024-%'
+      )
+      AND team_name = 'india'
+  level: 3
+  resultSchema:
+    - [Player ID, Name]
+    - ["bcf325d2", "Dhruv Jurel"]
+    - ["f088b960", "SN Khan"]
+    - ["-", "-"]
+    - ["-", "-"]
+
+- id: "7"
+  question: How many sixes has AB de Villiers (c4487b84), MS Dhoni (4a8a2e3b) and Virat Kohli (ba607b88) hit in international cricket? Sort the answer by name of the player.
+  titbit: Will Virat Kohli be able to surpass MS Dhoni in the future?
+  sql: |
+    SELECT players.name, count(*) as 'Sixes'
+      FROM runs
+      JOIN deliveries
+        ON runs.match_id = deliveries.match_id
+        AND runs.inning_number = deliveries.inning_number
+        AND runs.over_number = deliveries.over_number
+        AND runs.ball_number = deliveries.ball_number
+      JOIN players
+        ON deliveries.batter = players.id
+      WHERE deliveries.batter IN ('c4487b84', '4a8a2e3b', 'ba607b88')
+        AND runs.batsman = 6
+      GROUP BY deliveries.batter
+      ORDER BY name
+  level: 2
+  resultSchema:
+    - [Name, Sixes]
+    - ["AB de Villiers", "3xx"]
+    - ["MS Dhoni", "3xx"]
+    - ["Virat Kohli", "3xx"]
+
+- id: "8"
+  question: What is the win percentage of team India and England in international cricket?
+  hint: Use the WITH clause approach and create individual queries to calculate the total number of matches played and total matches won by each team.
+  sql: |
+    WITH counts AS (
+      SELECT
+        (
+          SELECT count(*) from teams_in_match WHERE team_name = 'england'
+        ) as matchesPlayedByEngland,
+        (
+          SELECT count(*) from teams_in_match WHERE team_name = 'india'
+        ) as matchesPlayedByIndia,
+        (
+          SELECT count(*) from matches WHERE winning_team_name = 'england'
+        ) as matchesWonByEngland,
+        (
+          SELECT count(*) from matches WHERE winning_team_name = 'india'
+        ) as matchesWonByIndia
+    )
+
+    SELECT
+      matchesWonByEngland * 100 / matchesPlayedByEngland as "Percent of matches won by England",
+      matchesWonByIndia * 100 / matchesPlayedByIndia as "Percent of matches won by India"
+    FROM counts
+  level: 2
+  resultSchema:
+    - ["Percent of matches won by England", "Percent of matches won by India"]
+    - ["48", "xx"]
+
+- id: "9"
+  question: List all the teams that have played Test cricket. Sort the team names in dictionary order.
+  titbit: Many other countries such as UAE, Nepal, or Hong Kong don't play Test cricket. They play T20 or ODI cricket.
+  sql: |
+    SELECT DISTINCT team_name from teams_in_match
+      JOIN teams ON team_name = name
+      JOIN matches ON match_id = matches.id
+      WHERE match_type = 'Test'
+      ORDER BY team_name
+  level: 0
+  resultSchema:
+    - ["Team Name"]
+    - ["Australia"]
+    - ["England"]
+    - ["New Zealand"]
+    - ["-"]
+    - ["-"]
+
+- id: "103"
+  comment: "How many players have played international cricket for team India?"
+  question: What is the highest score in a single match?
+  sql: SELECT name from players
+  level: 3
+  hidden: true
+
+- id: "104"
+  question: How many matches ended in a draw, tie, or no result?
+  sql: SELECT name from players
+  level: 1
+  hidden: true
+
+- id: "105"
+  question: Which player has the most man-of-the-match awards?
+  sql: SELECT name from players
+  level: 3
+  hidden: true
+
+- id: "106"
+  question: How often does the team winning the toss win the match?
+  sql: SELECT name from players
+  level: 4
+  hidden: true
+
+- id: "107"
+  question: List the top 10 countries with the most international cricket matches played in descending order.
+  sql: ""
+  level: 2
+  hidden: true

@@ -20,8 +20,6 @@ const SQLiteContext = createContext<
   | undefined
 >(undefined);
 
-let sqlite3 = await sqlite3InitModule();
-
 async function downloadWithProgress(
   url: string,
   onProgress: (progress: number) => void,
@@ -77,6 +75,7 @@ export function SQLiteProvider({
 
   useEffect(() => {
     const initDb = async (dbUrl: string) => {
+      let sqlite3 = await sqlite3InitModule();
       const buffer = await downloadWithProgress(dbUrl, setLoadingProgress);
       const p = sqlite3.wasm.allocFromTypedArray(buffer);
       const db = new sqlite3.oo1.DB("") as Database;
@@ -118,12 +117,13 @@ export function SQLiteProvider({
       const columnNames = [] as string[];
       const rows: SqlValue[] = [];
       try {
-        // Add LIMIT 100 to the query if it doesn't already have a LIMIT clause
-        query = query.endsWith(";") ? query.slice(0, -1) : query;
+        // Add LIMIT to the query if it doesn't already have a LIMIT clause
+        query = query.trim().endsWith(";") ? query.slice(0, -1) : query;
         const limitedQuery = query.toLowerCase().includes("limit")
           ? query
           : `${query} LIMIT 25;`;
-        console.log("query", limitedQuery);
+
+        console.log("Running SQL", limitedQuery);
 
         db.exec({
           sql: limitedQuery,

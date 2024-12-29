@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { TableMetadata, useSQLite } from "@/hooks/use-sqlite";
 import * as Monaco from "monaco-editor";
 import Editor from "@monaco-editor/react";
@@ -796,22 +797,37 @@ export function SqlEditor({
   onChange: (query: string | undefined) => void;
   defaultValue: string;
 }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const { getTableMetadata } = useSQLite();
 
   return (
-    <Editor
-      height="140px"
-      defaultLanguage="sql"
-      beforeMount={async (monaco) => {
-        const tables = await getTableMetadata();
-        configureSqlCompletions(monaco, tables);
-      }}
-      defaultValue={defaultValue}
-      onChange={onChange}
-      options={{
-        quickSuggestions: true,
-      }}
-      theme="vs-dark"
-    />
+    <div ref={containerRef} style={{ width: "100%", minHeight: "144px" }}>
+      <Editor
+        defaultLanguage="sql"
+        beforeMount={async (monaco) => {
+          const tables = await getTableMetadata();
+          configureSqlCompletions(monaco, tables);
+        }}
+        onMount={(editor) => {
+          editor.onDidContentSizeChange((e) => {
+            const contentHeight = Math.max(
+              145,
+              Math.min(1000, e.contentHeight),
+            );
+            if (containerRef.current) {
+              containerRef.current.style.height = `${contentHeight}px`;
+              editor.layout();
+            }
+          });
+        }}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        options={{
+          quickSuggestions: true,
+          scrollBeyondLastLine: false,
+        }}
+        theme="vs-dark"
+      />
+    </div>
   );
 }

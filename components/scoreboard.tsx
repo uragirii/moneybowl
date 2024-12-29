@@ -1,4 +1,7 @@
-import { type Score } from "@/types";
+"use client";
+import { useAtomValue } from "jotai";
+
+import { scoreboardAtom } from "@/atoms/scoreboard";
 
 function splitToNChunks(array: Array<unknown>, n: number) {
   let result = [];
@@ -8,8 +11,9 @@ function splitToNChunks(array: Array<unknown>, n: number) {
   return result;
 }
 
-export function Scoreboard({ score }: { score: Score[string] }) {
-  score = score ?? {};
+export function Scoreboard({ database }: { database: string }) {
+  const scoreboard = useAtomValue(scoreboardAtom);
+  const score = scoreboard?.[database] ?? {};
 
   const levels = Object.keys(score);
   const [easyLevels, mediumLevels, hardLevels] = splitToNChunks(levels, 3);

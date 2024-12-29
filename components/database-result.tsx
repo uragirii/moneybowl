@@ -1,4 +1,5 @@
 interface DatabaseResultProps {
+  titbit?: string;
   isResultCorrect: boolean;
   isShowingCorrectResult: boolean;
   results: any[];
@@ -6,6 +7,7 @@ interface DatabaseResultProps {
 }
 
 export function DatabaseResult({
+  titbit,
   results,
   isResultCorrect,
   isShowingCorrectResult,
@@ -15,8 +17,8 @@ export function DatabaseResult({
 
   return (
     <>
-      <div className="mt-4 max-w-4xl">
-        <div className="flex items-center gap-2 mb-2">
+      <div className="max-w-4xl">
+        <div className="flex items-center gap-2">
           <p
             className={
               "text-xl font-bold mt-10" +
@@ -42,7 +44,12 @@ export function DatabaseResult({
             </button>
           )}
         </div>
-        <div className="overflow-x-auto">
+        {isResultCorrect && (
+          <div className="mt-2">
+            <p className="">{titbit}</p>
+          </div>
+        )}
+        <div className="mt-2 overflow-x-auto">
           <table className="table table-zebra">
             <colgroup>
               <col span={1} style={{ width: "30px" }} />

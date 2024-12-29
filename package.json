@@ -13,6 +13,7 @@
     "@sqlite.org/sqlite-wasm": "^3.47.0-build1",
     "@tailwindcss/typography": "^0.5.15",
     "jotai": "^2.11.0",
+    "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.52.0",
     "next": "latest",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.6",
+    "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.17.13",
     "@types/node": "^22.5.4",
     "@types/react": "^18.3.5",

@@ -1,31 +1,30 @@
-"use client";
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useState, Suspense } from "react";
 import { useAtomValue } from "jotai";
+import yaml from "js-yaml";
 
-import { type Score } from "@/types";
+import { Questions, type Score } from "@/types";
 import { Scoreboard } from "@/components/scoreboard";
-import { scoreboardAtom } from "@/atoms/scoreboard";
 
-const Content = dynamic(() => import("./content"), { ssr: false });
-const SQLiteProvider = dynamic(
-  async () => (await import("@/hooks/use-sqlite")).SQLiteProvider,
-  { ssr: false },
-);
+import Content from "./content";
+import path from "path";
+import fs from "fs/promises";
 
-export default function Index() {
-  const { database } = useParams();
+export default async function Index({ params }: any) {
+  const { database } = await params;
 
-  const scoreboard = useAtomValue(scoreboardAtom);
+  const questions = await getQuestions(database);
 
   return (
-    <div className="max-w-5xl m-auto p-4">
+    <div className="max-w-5xl m-auto p-4 mb-24">
       <div className="hero mb-16">
         <div className="hero-content text-center">
           <div className="max-w-2xl">
-            <h1 className="text-5xl font-bold">SELECT * FROM Cricket</h1>
-            <Scoreboard score={scoreboard[database as string]} />
+            <h1 className="text-5xl font-bold">
+              <a href="/">SELECT * FROM Cricket</a>
+            </h1>
+            <Scoreboard database={database} />
           </div>
         </div>
       </div>
@@ -37,15 +36,23 @@ export default function Index() {
         src="https://dbdiagram.io/e/6744d12be9daa85acaab4fa4/674dad31e9daa85aca5e88b0"
       />
 
-      <Suspense fallback={<div>Loading...</div>}>
-        <SQLiteProvider
-          dbUrl={`${process.env.NEXT_PUBLIC_DATABASE_URL}/${database as string}.db`}
-        >
-          <Content />
-        </SQLiteProvider>
-      </Suspense>
-
-      <div className="h-48"></div>
+      <Content questions={questions} />
     </div>
   );
+}
+
+async function getQuestions(database: string): Promise<Questions> {
+  // Get the path to the JSON file
+  const jsonDirectory = path.join(process.cwd(), "static", database);
+
+  // Read the YAML file
+  const fileContents = await fs.readFile(
+    jsonDirectory + "/questions.yaml",
+    "utf-8",
+  );
+
+  // Parse the YAML as JSON
+  const questions = yaml.load(fileContents) as Questions;
+
+  return questions.filter((q) => !q.hidden);
 }
