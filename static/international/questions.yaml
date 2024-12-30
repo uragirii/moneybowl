@@ -139,6 +139,7 @@
 
 - id: "9"
   question: List all the teams that have played Test cricket. Sort the team names in dictionary order.
+  hint: You can get the team names from the `teams_in_match` table and use JOIN to filter the matches based on the match type.
   titbit: Many other countries such as UAE, Nepal, or Hong Kong don't play Test cricket. They play T20 or ODI cricket.
   sql: |
     SELECT DISTINCT team_name from teams_in_match

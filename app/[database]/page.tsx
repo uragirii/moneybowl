@@ -29,7 +29,25 @@ export default async function Index({ params }: any) {
         </div>
       </div>
 
-      <p className="text-xl text-info font-bold mb-2">Schema:</p>
+      <p className="text-xl text-info font-bold mb-2">ER Diagram:</p>
+      <div className="mb-5 prose">
+        <p>
+          The database records all the teams, players and matches stored in <code>teams</code>,{" "}
+          <code>players</code> and <code>matches</code> tables respectively. <br />
+        </p>
+        <p>
+          <code>players_in_match</code>, <code>teams_in_match</code> and <code>teams_players</code>{" "}
+          are junction tables denoting many-to-many relationship. These tables denote many-to-many
+          relationships.
+        </p>
+        <p>
+          For every match, the database also includes information about each delivery bowled. This
+          information is stored in the <code>innings</code>, <code>overs</code>,{" "}
+          <code>deliveries</code>, <code>wickets</code>,<code>runs</code>, and <code>extras</code>{" "}
+          tables. There being a one-to-many relationship between. As in, one match has many innings,
+          one inning has many overs, one over has many deliveries, etc.
+        </p>
+      </div>
       <iframe
         className="w-full"
         height="500"
@@ -46,10 +64,7 @@ async function getQuestions(database: string): Promise<Questions> {
   const jsonDirectory = path.join(process.cwd(), "static", database);
 
   // Read the YAML file
-  const fileContents = await fs.readFile(
-    jsonDirectory + "/questions.yaml",
-    "utf-8",
-  );
+  const fileContents = await fs.readFile(jsonDirectory + "/questions.yaml", "utf-8");
 
   // Parse the YAML as JSON
   const questions = yaml.load(fileContents) as Questions;

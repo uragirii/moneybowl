@@ -45,7 +45,7 @@ export function DatabaseResult({
           )}
         </div>
         {isResultCorrect && (
-          <div className="mt-2">
+          <div className="mt-2 prose">
             <p className="">{titbit}</p>
           </div>
         )}

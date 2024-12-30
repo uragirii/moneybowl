@@ -7,10 +7,9 @@ import { Questions } from "@/types";
 import { useQuestions } from "@/hooks/use-questions";
 import { scoreboardAtom } from "@/atoms/scoreboard";
 
-const SQLiteProvider = dynamic(
-  async () => (await import("@/hooks/use-sqlite")).SQLiteProvider,
-  { ssr: false },
-);
+const SQLiteProvider = dynamic(async () => (await import("@/hooks/use-sqlite")).SQLiteProvider, {
+  ssr: false,
+});
 
 const Question = dynamic(async () => (await import("./question")).Question, {
   ssr: false,
@@ -25,9 +24,7 @@ export default function Content({ questions }: { questions: Questions }) {
   });
 
   return (
-    <SQLiteProvider
-      dbUrl={`${process.env.NEXT_PUBLIC_DATABASE_URL}/${database as string}.db`}
-    >
+    <SQLiteProvider dbUrl={`${process.env.NEXT_PUBLIC_DATABASE_URL}/${database as string}.db`}>
       {currentQuestion ? (
         <Question
           key={currentQuestion.question}
@@ -38,10 +35,12 @@ export default function Content({ questions }: { questions: Questions }) {
       ) : (
         <div className="mt-10">
           <p className="text-xl text-info font-bold">Questions:</p>
-          <p className="mt-2">
-            Thank you! that's all the questions for now. We'll be adding more
-            soon. Do you want to reset the scoreboard and start again?
-          </p>
+          <article className="prose">
+            <p>
+              Thank you! that's all the questions for now. We'll be adding more soon. Do you want to
+              reset the scoreboard and start again?
+            </p>
+          </article>
           <button
             className="btn btn-soft btn-primary btn-sm mt-2"
             onClick={() => {
