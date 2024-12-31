@@ -2,6 +2,7 @@ import { isEqual } from "lodash";
 import { useState } from "react";
 import { useSetAtom } from "jotai";
 import { useParams } from "next/navigation";
+import posthog from "posthog-js";
 
 import { DatabaseResult } from "@/components/database-result";
 import { SqlEditor } from "@/components/sql-editor";
@@ -31,8 +32,6 @@ export function Question({
 
   const handleRunQuery = async () => {
     try {
-      const posthog = (window as any).posthog;
-
       setError("");
       const [result, correctResult] = await Promise.all([
         runQuery(queryText),
@@ -45,7 +44,7 @@ export function Question({
       const [, correctResultWithoutHeader] = correctResult;
 
       if (isEqual(resultWithoutHeader, correctResultWithoutHeader)) {
-        posthog?.capture("run_query", { id: question.id, correctAnswer: true });
+        posthog.capture("run_query", { id: question.id, correctAnswer: true });
         setIsResultCorrect(true);
         setScoreboard((prev) => {
           const newScore = prev?.[database as string] ?? {};
@@ -55,7 +54,7 @@ export function Question({
           return { ...prev, [database as string]: newScore };
         });
       } else {
-        posthog?.capture("run_query", {
+        posthog.capture("run_query", {
           id: question.id,
           correctAnswer: false,
         });
