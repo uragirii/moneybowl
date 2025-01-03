@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, createContext, useContext } from "react";
-import sqlite3InitModule, {
-  type Database,
-  type SqlValue,
-} from "@sqlite.org/sqlite-wasm";
+import sqlite3InitModule, { type Database, type SqlValue } from "@sqlite.org/sqlite-wasm";
+import posthog from "posthog-js";
 
 export interface TableMetadata {
   name: string;
@@ -22,7 +20,7 @@ const SQLiteContext = createContext<
 
 async function downloadWithProgress(
   url: string,
-  onProgress: (progress: number) => void,
+  onProgress: (progress: number) => void
 ): Promise<Uint8Array> {
   const response = await fetch(url, {
     headers: {
@@ -30,10 +28,7 @@ async function downloadWithProgress(
     },
   });
   const contentLength =
-    Number(
-      response.headers.get("x-file-size") ??
-        response.headers.get("Content-Length"),
-    ) || 0;
+    Number(response.headers.get("x-file-size") ?? response.headers.get("Content-Length")) || 0;
   const reader = response.body?.getReader();
   if (!reader) throw new Error("Failed to get response reader");
 
@@ -63,13 +58,7 @@ async function downloadWithProgress(
   return concatenated;
 }
 
-export function SQLiteProvider({
-  children,
-  dbUrl,
-}: {
-  children: React.ReactNode;
-  dbUrl: string;
-}) {
+export function SQLiteProvider({ children, dbUrl }: { children: React.ReactNode; dbUrl: string }) {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const dbRef = useRef<Database | null>(null);
 
@@ -85,7 +74,7 @@ export function SQLiteProvider({
         p,
         buffer.byteLength,
         buffer.byteLength,
-        sqlite3.capi.SQLITE_DESERIALIZE_FREEONCLOSE,
+        sqlite3.capi.SQLITE_DESERIALIZE_FREEONCLOSE
         // Optionally:
         // | sqlite3.capi.SQLITE_DESERIALIZE_RESIZEABLE
       );
@@ -102,9 +91,23 @@ export function SQLiteProvider({
       return db;
     };
 
-    initDb(dbUrl).then((database) => {
-      dbRef.current = database;
-    });
+    const startTime = performance.now();
+
+    initDb(dbUrl)
+      .then((database) => {
+        dbRef.current = database;
+        const endTime = performance.now();
+        posthog.capture("sqlite_db_loaded", {
+          durationMs: endTime - startTime,
+        });
+      })
+      .catch((error) => {
+        const endTime = performance.now();
+        posthog.capture("sqlite_db_load_failed", {
+          durationMs: endTime - startTime,
+          error: error.message ?? error.toString(),
+        });
+      });
   }, [dbUrl]);
 
   const runQuery = async (query: string) => {
@@ -119,9 +122,7 @@ export function SQLiteProvider({
       try {
         // Add LIMIT to the query if it doesn't already have a LIMIT clause
         query = query.trim().endsWith(";") ? query.slice(0, -1) : query;
-        const limitedQuery = query.toLowerCase().includes("limit")
-          ? query
-          : `${query} LIMIT 25;`;
+        const limitedQuery = query.toLowerCase().includes("limit") ? query : `${query} LIMIT 25;`;
 
         console.log("Running SQL", limitedQuery);
 
@@ -185,9 +186,7 @@ export function SQLiteProvider({
   };
 
   return (
-    <SQLiteContext.Provider
-      value={{ runQuery, loadingProgress, getTableMetadata }}
-    >
+    <SQLiteContext.Provider value={{ runQuery, loadingProgress, getTableMetadata }}>
       {children}
     </SQLiteContext.Provider>
   );
