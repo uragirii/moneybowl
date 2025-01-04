@@ -57,9 +57,25 @@ export default function Content() {
               <span className="font-bold">2001-12-19</span> and{" "}
               <span className="font-bold">2024-11-27</span>.
             </p>
-            <a href="international">
-              <button className="btn btn-xs btn-outline btn-secondary mt-1">Start answering</button>
-            </a>
+            <div className="flex gap-2 mt-1">
+              <a href="international">
+                <button className="btn btn-xs btn-secondary">Start answering</button>
+              </a>
+              <a href="international/stats">
+                <button className="btn btn-xs btn-outline btn-secondary">View player stats</button>
+              </a>
+            </div>
+            {/* <div className="mt-2">
+              <p className="font-bold">Player Stats</p>
+              <p>
+                Player statistics extracted from this database, such as - total runs, boundaries,
+                wickets, total matches played etc. Along with the SQL query used to extract the
+                data.
+              </p>
+              <a href="international">
+                <button className="btn btn-xs btn-outline btn-secondary mt-1">View Stats</button>
+              </a>
+            </div> */}
           </div>
           <div className="mt-5">
             <p className="text-lg font-bold mt-2">

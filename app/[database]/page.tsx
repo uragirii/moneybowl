@@ -1,7 +1,3 @@
-import { useParams } from "next/navigation";
-import dynamic from "next/dynamic";
-import { useState, Suspense } from "react";
-import { useAtomValue } from "jotai";
 import yaml from "js-yaml";
 
 import { Questions, type Score } from "@/types";
@@ -10,6 +6,10 @@ import { Scoreboard } from "@/components/scoreboard";
 import Content from "./content";
 import path from "path";
 import fs from "fs/promises";
+
+export async function generateStaticParams() {
+  return [{ database: "international" }];
+}
 
 export default async function Index({ params }: any) {
   const { database } = await params;

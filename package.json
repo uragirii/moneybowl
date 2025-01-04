@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "mkdir -p .static && [ ! -f .static/international.db ] && curl -o .static/international.db $NEXT_PUBLIC_DATABASE_URL/international.db; next build",
     "start": "next start",
     "pages:build": "npx @cloudflare/next-on-pages",
     "preview": "npm run pages:build && wrangler pages dev",
@@ -12,6 +12,7 @@
     "@monaco-editor/react": "^4.6.0",
     "@sqlite.org/sqlite-wasm": "^3.47.0-build1",
     "@tailwindcss/typography": "^0.5.15",
+    "better-sqlite3": "^11.7.0",
     "jotai": "^2.11.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.6",
+    "@types/better-sqlite3": "^7.6.12",
     "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.17.13",
     "@types/node": "^22.5.4",
