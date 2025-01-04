@@ -6,9 +6,8 @@ export default function Content() {
           <div className="max-w-2xl flex flex-col items-center">
             <h1 className="text-5xl font-bold">SELECT * FROM Cricket</h1>
             <p className="mt-3 max-w-lg">
-              <span className="font-bold">Moneybowl:</span> like the movie
-              Moneyball. Master SQL while learning interesting facts about
-              cricket.
+              <span className="font-bold">Moneybowl:</span> like the movie Moneyball. Master SQL
+              while learning interesting facts about cricket.
             </p>
           </div>
         </div>
@@ -19,11 +18,9 @@ export default function Content() {
           <div>
             <p className="text-xl text-info font-bold">How it works?</p>
             <ul className="list-none">
+              <li className="before:content-['-'] before:mr-2">Select a database</li>
               <li className="before:content-['-'] before:mr-2">
-                Select a database
-              </li>
-              <li className="before:content-['-'] before:mr-2">
-                Study the DB schema using the ER diagram
+                Study the database schema using the ER diagram
               </li>
               <li className="before:content-['-'] before:mr-2">
                 Read the question and submit an SQL query
@@ -44,8 +41,8 @@ export default function Content() {
           <div className="mt-5">
             <p className="text-xl text-info font-bold">Available Databases</p>
             <p>
-              All databases have the same <span>schema</span> and track teams,
-              players, matches and each delivery in the match.
+              All databases have the same <span>schema</span> and track teams, players, matches and
+              each delivery in the match.
             </p>
             <p className="text-lg font-bold mt-2">
               <a className="link" href="international">
@@ -53,14 +50,16 @@ export default function Content() {
               </a>
             </p>
             <p>
-              The database includes matches played between countries including
-              tournaments like ICC, T20 World Cup, etc. Across all formats
-              including T20, ODI and test. A total of{" "}
-              <span className="font-bold">6378</span> matches are available,
-              played by <span className="font-bold"> male</span> players, and
-              played between <span className="font-bold">2001-12-19</span> and{" "}
+              The database includes matches played between countries including tournaments like ICC,
+              T20 World Cup, etc. Across all formats including T20, ODI and test. A total of{" "}
+              <span className="font-bold">6378</span> matches are available, played by{" "}
+              <span className="font-bold"> male</span> players, and played between{" "}
+              <span className="font-bold">2001-12-19</span> and{" "}
               <span className="font-bold">2024-11-27</span>.
             </p>
+            <a href="international">
+              <button className="btn btn-xs btn-outline btn-secondary mt-1">Start answering</button>
+            </a>
           </div>
           <div className="mt-5">
             <p className="text-lg font-bold mt-2">
