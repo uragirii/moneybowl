@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 
 import { getDatabase } from "@/lib/sqlite";
+import { capitalize } from "lodash";
 
 const PAGE_SIZE = 50;
 
@@ -33,7 +34,7 @@ export async function generateStaticParams() {
       }));
 
       return pages.map((page) => ({
-        database: 'international',
+        database: "international",
         team: team.team_name,
         page: page.page,
       }));
@@ -89,26 +90,44 @@ export default async function ({
       </div>
 
       <p className="text-xl text-info font-bold mb-2">Players</p>
-      <p>Click on the player name to view their stats.</p>
+      <p>
+        All players to play for team {capitalize(team)}. The list is sorted by number of matches
+        played.
+      </p>
 
-      <table className="table table-sm table-zebra">
-        <thead>
-          <tr>
-            <th>Player</th>
-            <th>Matches Played</th>
-          </tr>
-        </thead>
-        <tbody>
-          {players.map((player: any) => (
-            <tr key={player.id}>
-              <td>
-                <a href={`stats/${team}/${player.id}?page=1`}>{player.name}</a>
-              </td>
-              <td>{player.count}</td>
+      <article className="prose mt-4">
+        <table className="table table-sm table-zebra">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Matches Played</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {players.map((player: any) => (
+              <tr key={player.id}>
+                <td>{player.name}</td>
+                <td>{player.count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="text-sm text-gray-500">
+          The table is created using SQL queries. The view the database in your browser go to{" "}
+          <a href={`https://moneybowl.xyz/${database}`}>moneybowl.xyz/{database}</a>.
+        </p>
+      </article>
+
+      <div className="mt-6 flex gap-2">
+        {Number(page) > 1 && (
+          <button className="btn btn-sm btn-neutral">
+            <a href={`?page=${Number(page) - 1}`}>Prev page</a>
+          </button>
+        )}
+        <button className="btn btn-sm btn-neutral">
+          <a href={`?page=${Number(page) + 1}`}>Next page</a>
+        </button>
+      </div>
     </div>
   );
 }
