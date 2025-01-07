@@ -61,10 +61,10 @@ export default async function Index({ params }: any) {
       <div className="footer footer-center mt-44 gap-2">
         <div>🏏 Moneybowl</div>
         <nav className="grid grid-flow-col gap-4">
-          <a className="link link-hover" href="https://github.com/il3ven/moneybowl">
+          <a className="link link-hover" href="https://github.com/il3ven/moneybowl" target="__blank">
             Submit question
           </a>
-          <a className="link link-hover" href="https://lghzh51gfia.typeform.com/to/Bvxj8Xl6">
+          <a className="link link-hover" href="https://lghzh51gfia.typeform.com/to/Bvxj8Xl6" target="__blank">
             Feedback
           </a>
         </nav>
