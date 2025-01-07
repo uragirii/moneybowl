@@ -141,7 +141,7 @@ export function Question({
         )}
         {isResultCorrect === undefined && loadingProgress < 100 && (
           <button onClick={handleRunQuery} className="btn btn-sm btn-accen btn-disabledt">
-            Download database... ({Math.floor(loadingProgress)}%)
+            Downloading database... ({Math.floor(loadingProgress)}%)
           </button>
         )}
         {isResultCorrect === undefined && loadingProgress === 100 && (

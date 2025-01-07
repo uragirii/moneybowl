@@ -1,11 +1,12 @@
 import yaml from "js-yaml";
+import path from "path";
+import fs from "fs/promises";
 
 import { Questions, type Score } from "@/types";
 import { Scoreboard } from "@/components/scoreboard";
 
 import Content from "./content";
-import path from "path";
-import fs from "fs/promises";
+import { Diagram } from "./diagram";
 
 export async function generateStaticParams() {
   return [{ database: "international" }];
@@ -17,7 +18,7 @@ export default async function Index({ params }: any) {
   const questions = await getQuestions(database);
 
   return (
-    <div className="max-w-5xl m-auto p-4 mb-24">
+    <div className="max-w-5xl m-auto p-4">
       <div className="hero mb-16">
         <div className="hero-content text-center">
           <div className="max-w-2xl">
@@ -48,13 +49,26 @@ export default async function Index({ params }: any) {
           one inning has many overs, one over has many deliveries, etc.
         </p>
       </div>
-      <iframe
-        className="w-full"
-        height="500"
-        src="https://dbdiagram.io/e/6744d12be9daa85acaab4fa4/674dad31e9daa85aca5e88b0"
-      />
+      <div>
+        <Diagram
+          src={"https://dbdiagram.io/e/6744d12be9daa85acaab4fa4/674dad31e9daa85aca5e88b0"}
+          fallbackSrc={`static/${database}/diagram.png`}
+        />
+      </div>
 
       <Content questions={questions} />
+
+      <div className="footer footer-center mt-44 gap-2">
+        <div>🏏 Moneybowl</div>
+        <nav className="grid grid-flow-col gap-4">
+          <a className="link link-hover" href="https://github.com/il3ven/moneybowl">
+            Submit question
+          </a>
+          <a className="link link-hover" href="https://lghzh51gfia.typeform.com/to/Bvxj8Xl6">
+            Feedback
+          </a>
+        </nav>
+      </div>
     </div>
   );
 }
