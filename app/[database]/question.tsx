@@ -24,7 +24,9 @@ export function Question({
   const [results, setResults] = useState<any[]>([]);
   const [correctResults, setCorrectResults] = useState<any[]>([]);
   const [showCorrectResult, setShowCorrectResult] = useState(false);
-  const [isResultCorrect, setIsResultCorrect] = useState<boolean | undefined>(undefined);
+  const [isResultCorrect, setIsResultCorrect] = useState<boolean | undefined>(
+    undefined
+  );
   const [error, setError] = useState("");
   const { runQuery, loadingProgress } = useSQLite();
   const setScoreboard = useSetAtom(scoreboardAtom);
@@ -73,10 +75,15 @@ export function Question({
     <>
       <p className="text-xl text-info font-bold mt-10 mb-2">Question:</p>
       <p className="text-xl font-semibold">{question.question}</p>
-      {showHint && <p className="text-sm text-gray-500 mt-1">{question.hint}</p>}
+      {showHint && (
+        <p className="text-sm text-gray-500 mt-1">{question.hint}</p>
+      )}
       <div className="mt-2 flex gap-2">
         {question.hint && (
-          <button className="btn btn-outline btn-xs inline-block" onClick={() => setShowHint(true)}>
+          <button
+            className="btn btn-outline btn-xs inline-block"
+            onClick={() => setShowHint(true)}
+          >
             Show hint
           </button>
         )}
@@ -110,8 +117,8 @@ export function Question({
           <p className="font-bold">How the result should look?</p>
           <article className="prose">
             <p className="text-sm">
-              The result of your SQL query should look like the table below. Your column name could
-              be different but the order matters.
+              The result of your SQL query should look like the table below.
+              Your column name could be different but the order matters.
             </p>
             <table className="table table-sm table-zebra max-w-fit -ml-2 -mt-2">
               <thead>
@@ -137,15 +144,25 @@ export function Question({
       <div className="mt-8 flex flex-col gap-2 items-start">
         <p className="font-bold">Write your query</p>
         {loadingProgress >= 100 && (
-          <SqlEditor onChange={(value) => setQueryText(value ?? "")} defaultValue={queryText} />
+          <SqlEditor
+            onChange={(value) => setQueryText(value ?? "")}
+            defaultValue={queryText}
+            onRunQuery={handleRunQuery}
+          />
         )}
         {isResultCorrect === undefined && loadingProgress < 100 && (
-          <button onClick={handleRunQuery} className="btn btn-sm btn-accen btn-disabledt">
+          <button
+            onClick={handleRunQuery}
+            className="btn btn-sm btn-accen btn-disabledt"
+          >
             Downloading database... ({Math.floor(loadingProgress)}%)
           </button>
         )}
         {isResultCorrect === undefined && loadingProgress === 100 && (
-          <button onClick={handleRunQuery} className="btn btn-sm btn-accent mt-2">
+          <button
+            onClick={handleRunQuery}
+            className="btn btn-sm btn-accent mt-2"
+          >
             Run Query
           </button>
         )}
@@ -155,7 +172,10 @@ export function Question({
           </button>
         )}
         {isResultCorrect === true && (
-          <button onClick={() => nextQuestion(question.level)} className="btn btn-sm btn-info">
+          <button
+            onClick={() => nextQuestion(question.level)}
+            className="btn btn-sm btn-info"
+          >
             Next Question
           </button>
         )}

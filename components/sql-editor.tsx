@@ -734,7 +734,7 @@ const keywords = {
 
 export function configureSqlCompletions(
   monaco: typeof Monaco,
-  tables: TableMetadata[],
+  tables: TableMetadata[]
 ) {
   monaco.languages.registerCompletionItemProvider("sql", {
     triggerCharacters: ["."],
@@ -793,9 +793,11 @@ export function configureSqlCompletions(
 export function SqlEditor({
   onChange,
   defaultValue,
+  onRunQuery,
 }: {
   onChange: (query: string | undefined) => void;
   defaultValue: string;
+  onRunQuery: () => void;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { getTableMetadata } = useSQLite();
@@ -807,12 +809,21 @@ export function SqlEditor({
         beforeMount={async (monaco) => {
           const tables = await getTableMetadata();
           configureSqlCompletions(monaco, tables);
+          monaco.editor.addCommand({
+            id: "run-query",
+            run: onRunQuery,
+          });
+
+          monaco.editor.addKeybindingRule({
+            keybinding: Monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+            command: "run-query",
+          });
         }}
         onMount={(editor) => {
           editor.onDidContentSizeChange((e) => {
             const contentHeight = Math.max(
               145,
-              Math.min(1000, e.contentHeight),
+              Math.min(1000, e.contentHeight)
             );
             if (containerRef.current) {
               containerRef.current.style.height = `${contentHeight}px`;
